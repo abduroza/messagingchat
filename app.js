@@ -3,10 +3,20 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var env = require("dotenv").config();
 
 var indexRouter = require("./routes/index");
 
 var app = express();
+
+// Socket setup
+const socketio = require("socket.io");
+const http = require("http");
+const server = http.createServer();
+server.on("request", app);
+const io = socketio(server);
+const socketEvents = require("./sockets");
+socketEvents(io);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
