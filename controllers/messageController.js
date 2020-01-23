@@ -9,7 +9,6 @@ async function addMessage(req, res, next) {
     });
 
     let chatroom_id = chatroom[0].id;
-    console.log({ chatroom: chatroom });
     let message = await Message.create({
       chatroom_id: chatroom_id,
       user_id: req.decoded.id,
