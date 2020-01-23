@@ -40,8 +40,9 @@ async function login(req, res) {
       if (result == true) {
         let token = await jwt.sign(
           {
-            _id: user._id,
-            email: user.email
+            id: user.id,
+            email: user.email,
+            lastLogout: user.lastLogout
           },
           process.env.TOKEN_SECRET
         );
@@ -64,6 +65,6 @@ async function login(req, res) {
 async function remove(req, res, next) {
   let update = await req.user.update({ lastLogout: Date.now() });
   let logout = await req.logOut();
-  res.status(204).json(sucRes(update, "Logout success"));
+  res.status(204).json(sucRes(update, "You are logout"));
 }
 module.exports = { register, login, remove };
