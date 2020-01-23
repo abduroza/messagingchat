@@ -41,12 +41,12 @@ async function showAllMessage(req, res, next) {
     let foundMessages = await Message.findAll({
       where: {
         chatroom_id: req.params.chatroom_id
-      },
-      include: [
-        { model: User, attributes: ["fullname", "email"] },
-        { model: Chatroom, attributes: ["name"] }
-      ],
-      order: [["cretedAt", "ASC"]]
+      }
+      //   include: [
+      //     { model: User, attributes: ["fullname", "email"] },
+      //     { model: Chatroom, attributes: ["name"] }
+      //   ],
+      //   order: [["cretedAt", "ASC"]]
     });
     res
       .status(200)
@@ -54,24 +54,39 @@ async function showAllMessage(req, res, next) {
   } catch (next) {}
 }
 
-//post request to add a message
-async function addMessage(req, res, next) {
-  try {
-    let foundUser = await User.findById(req.decoded.id);
-    let createdMessage = await Message.create(req.body).toJSON();
+//post request to post chatroom
+async function createRoom(req, res, next) {
+  let nameRoom = req.body.name;
+  let chatroom = await Chatroom.findOne({
+    where: { name: nameRoom }
+  });
 
-    createdMessage.user_id = foundUser;
-    createdMessage.save();
-
-    res.status(201).json(sucRes(createdMessage, "Add message success"));
-  } catch (err) {
-    res.status(400).json(failRes(err));
+  if (chatroom == null) {
+    let addChatroom = await Chatroom.create({ name: nameRoom });
+    res.status(201).json(sucRes(addChatroom, "Create chatroom success"));
+  } else {
+    res.status(400).json(failRes(chatroom, "Chatroom name already exist"));
   }
 }
+
+// //post request to add a message
+// async function addMessage(req, res, next) {
+//   try {
+//     let foundUser = await User.findById(req.decoded.id);
+//     let createdMessage = await Message.create(req.body).toJSON();
+
+//     createdMessage.user_id = foundUser;
+//     createdMessage.save();
+
+//     res.status(201).json(sucRes(createdMessage, "Add message success"));
+//   } catch (err) {
+//     res.status(400).json(failRes(err));
+//   }
+// }
 
 module.exports = {
   showAllChatroom,
   showUnreadMessage,
   showAllMessage,
-  addMessage
+  createRoom
 };
