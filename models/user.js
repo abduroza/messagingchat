@@ -4,9 +4,16 @@ module.exports = (sequelize, DataTypes) => {
     "User",
     {
       fullname: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
-      lastLogout: DataTypes.DATE
+      email: { type: DataTypes.STRING, unique: true, allowNull: false },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          min: { args: 5, msg: "password min 5 charachter" },
+          max: 1000
+        }
+      },
+      lastLogout: { type: DataTypes.DATE, devaultValue: null }
     },
     {}
   );

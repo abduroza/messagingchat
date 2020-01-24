@@ -18,7 +18,11 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          min: { args: 5, msg: "password min 5 charachter" },
+          max: 1000
+        }
       },
       lastLogout: {
         type: Sequelize.DATE
