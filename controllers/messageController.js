@@ -20,4 +20,15 @@ async function addMessage(req, res, next) {
   }
 }
 
-module.exports = { addMessage };
+async function getMySentMessage(req, res) {
+  try {
+    let messages = await Message.findAll({
+      where: { user_id: req.decoded.id }
+    });
+    res.status(201).json(sucRes(messages, "Your sent message"));
+  } catch (err) {
+    res.status(404).json(failRes(err, "You don't have sent message"));
+  }
+}
+
+module.exports = { addMessage, getMySentMessage };

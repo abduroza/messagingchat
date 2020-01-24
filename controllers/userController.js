@@ -14,14 +14,16 @@ async function register(req, res) {
     });
 
     let result = {
-      _id: data._id,
+      id: data.id,
       fullname: data.fullname,
       email: data.email
     };
 
     res.status(201).json(sucRes(result, "Register New User Success"));
   } catch (err) {
-    res.status(422).json(failRes(err.message, "please fill correctly"));
+    res
+      .status(422)
+      .json(failRes(err.errors[0].message, "please fill correctly"));
   }
 }
 
@@ -41,13 +43,14 @@ async function login(req, res) {
         let token = await jwt.sign(
           {
             id: user.id,
+            fullname: user.fullname,
             email: user.email,
             lastLogout: user.lastLogout
           },
           process.env.TOKEN_SECRET
         );
         let dataLogin = {
-          _id: user._id,
+          id: user.id,
           fullname: user.fullname,
           email: user.email,
           token: token
@@ -60,11 +63,28 @@ async function login(req, res) {
   }
 }
 
-// DELETE request to logout user
+//get all user
+async function getAllUser(req, res) {
+  let user = await User.findAll();
+  res.status(200).json(sucRes(user, "Show all user"));
+}
 
-async function remove(req, res, next) {
-  let update = await req.user.update({ lastLogout: Date.now() });
+// DELETE request to logout user
+async function logout(req, res, next) {
+  let update = await User.update(
+    { lastLogout: Date.now() },
+    { where: { id: req.decoded.id } }
+  );
   let logout = await req.logOut();
   res.status(204).json(sucRes(update, "You are logout"));
 }
-module.exports = { register, login, remove };
+
+//delete user, without delete messsage
+async function removeUser(req, res) {
+  let destroyUser = await User.destroy({ where: { id: req.decoded.id } });
+  res
+    .status(200)
+    .json(sucRes(destroyUser, `${req.decoded.fullname} user success deleted`));
+}
+
+module.exports = { register, login, removeUser, getAllUser };

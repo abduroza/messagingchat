@@ -8,25 +8,20 @@ async function showAllChatroom(req, res, next) {
   try {
     let foundChatrooms = await Chatroom.findAll();
     res.status(200).json(sucRes(foundChatrooms, "Show all chatroom"));
-  } catch (next) {}
+  } catch (err) {
+    res.status(400).json(failRes(err));
+  }
 }
 
 // Get new messages from chatroom since user logged in
 async function showUnreadMessage(req, res, next) {
-  if (!req.decoded.id) {
-    res.status(404).json(failRes("User Not Found"));
-  }
   try {
     let foundMessages = await Message.findAll({
       where: {
         createdAt: {
-          $gt: req.decoded.lastLogout //menampilkan semua messsage yang dibuat pada waktu setelah user logout
+          $gt: req.decoded.lastLogout //show all message after logout
         }
       }
-      //   include: [
-      //     { model: User, attributes: ["fullname", "email"] },
-      //     { model: Chatroom, attributes: ["name"] }
-      //   ]
     });
     res.status(200).json(sucRes(foundMessages, "Show new message"));
   } catch (err) {
@@ -36,25 +31,26 @@ async function showUnreadMessage(req, res, next) {
 
 // get request to get all messages of a chatroom
 async function showAllMessage(req, res, next) {
-  console.log({ chatroom_id: req.params.chatroom_id });
   try {
     let foundMessages = await Message.findAll({
       where: {
         chatroom_id: req.params.chatroom_id
       }
-      //   include: [
-      //     { model: User, attributes: ["fullname", "email"] },
-      //     { model: Chatroom, attributes: ["name"] }
-      //   ],
-      //   order: [["cretedAt", "ASC"]]
     });
     res
       .status(200)
-      .json(sucRes(foundMessages, "Show all message of a chatroom"));
-  } catch (next) {}
+      .json(
+        sucRes(
+          foundMessages,
+          `Show all message of a chatroom with id: ${req.params.chatroom_id}`
+        )
+      );
+  } catch (err) {
+    res.status(400).json(failRes(err, "Fail show all message"));
+  }
 }
 
-//post request to post chatroom
+//post request to post chatroom. Create chatroom can used to chatting via group with identity name of group
 async function createRoom(req, res, next) {
   let nameRoom = req.body.name;
   let chatroom = await Chatroom.findOne({
@@ -68,21 +64,6 @@ async function createRoom(req, res, next) {
     res.status(400).json(failRes(chatroom, "Chatroom name already exist"));
   }
 }
-
-// //post request to add a message
-// async function addMessage(req, res, next) {
-//   try {
-//     let foundUser = await User.findById(req.decoded.id);
-//     let createdMessage = await Message.create(req.body).toJSON();
-
-//     createdMessage.user_id = foundUser;
-//     createdMessage.save();
-
-//     res.status(201).json(sucRes(createdMessage, "Add message success"));
-//   } catch (err) {
-//     res.status(400).json(failRes(err));
-//   }
-// }
 
 module.exports = {
   showAllChatroom,
