@@ -2,7 +2,7 @@ const Message = require("../models").Message;
 const Chatroom = require("../models").Chatroom;
 const { sucRes, failRes } = require("../helper/resFormat");
 
-async function addMessage(req, res, next) {
+async function addMessage(req, res) {
   try {
     let chatroom = await Chatroom.findAll({
       where: { name: req.body.name }
