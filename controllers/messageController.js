@@ -4,6 +4,7 @@ const User = require("../models").User;
 const { Op } = require("sequelize");
 const { sucRes, failRes } = require("../helper/resFormat");
 
+//send message di group
 async function addMessage(req, res) {
   try {
     let chatroom = await Chatroom.findAll({

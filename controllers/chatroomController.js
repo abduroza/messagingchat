@@ -13,22 +13,6 @@ async function showAllChatroom(req, res) {
   }
 }
 
-// Get new messages from chatroom since user logged in
-async function showUnreadMessage(req, res) {
-  try {
-    let foundMessages = await Message.findAll({
-      where: {
-        createdAt: {
-          $gt: req.decoded.lastLogout //show all message after logout
-        }
-      }
-    });
-    res.status(200).json(sucRes(foundMessages, "Show new message"));
-  } catch (err) {
-    res.status(400).json(failRes(err));
-  }
-}
-
 // get request to get all messages of a chatroom
 async function showAllMessage(req, res) {
   try {
@@ -37,9 +21,6 @@ async function showAllMessage(req, res) {
         chatroom_id: req.params.chatroom_id
       }
     });
-
-    //cek apakah user yg membuka pesan di chatroom, adalah pesannya
-    // let foundChatrooms = await Chatroom.finByPk(req.params.chatroom_id);
 
     res
       .status(200)
@@ -71,9 +52,4 @@ async function createRoom(req, res) {
   }
 }
 
-module.exports = {
-  showAllChatroom,
-  showUnreadMessage,
-  showAllMessage,
-  createRoom
-};
+module.exports = { showAllChatroom, showAllMessage, createRoom };
