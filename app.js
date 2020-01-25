@@ -21,6 +21,13 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api", indexRouter);
 
+//perform error message if wrong type of endpoint/route
+app.use((req, res) => {
+  res
+    .status(404)
+    .json({ URL: req.originalUrl + "  Not Found. Enter URL Correctly" });
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
