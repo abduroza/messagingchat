@@ -21,6 +21,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api", indexRouter);
 
+app.get("/", (req, res) => {
+  res.send({ hello: "Chat Messaging" });
+});
+
 //perform error message if wrong type of endpoint/route
 app.use((req, res) => {
   res
