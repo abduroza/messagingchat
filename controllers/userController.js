@@ -21,7 +21,7 @@ async function register(req, res) {
 
     res.status(201).json(sucRes(result, "Register New User Success"));
   } catch (err) {
-    res.status(422).json(failRes(err.errors, "please fill correctly"));
+    res.status(422).json(failRes(err, "please fill correctly"));
   }
 }
 
