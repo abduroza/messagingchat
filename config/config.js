@@ -1,7 +1,7 @@
 require("dotenv").config();
-const dbUsername = process.env.DB_USERNAME;
-const dbPassword = process.env.DB_PASSWORD;
-const dbName = process.env.DB_NAME;
+const dbUsername = process.env.DBDEV_USERNAME;
+const dbPassword = process.env.DBDEV_PASSWORD;
+const dbName = process.env.DBDEV_NAME;
 const dbProdUsername = process.env.DBPROD_USERNAME;
 const dbProdPassword = process.env.DBPROD_PASSWORD;
 const dbProdName = process.env.DBPROD_NAME;
