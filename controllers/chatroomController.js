@@ -3,7 +3,7 @@ const Message = require("../models/").Message;
 const User = require("../models/").User;
 const { sucRes, failRes } = require("../helper/resFormat");
 
-// GET request to get all chatrooms
+// GET request to get all chatrooms 
 async function showAllChatroom(req, res) {
   try {
     let foundChatrooms = await Chatroom.findAll();
